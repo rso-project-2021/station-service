@@ -1,4 +1,4 @@
-name: CI
+name: Build
 
 on:
   push:
@@ -14,10 +14,10 @@ jobs:
 
       # Setup postgres database.
       postgres:
-        image: postgres
+        image: postgres:alpine
         env:
           POSTGRES_USER: root
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: secret
           POSTGRES_DB: station_service
         options: >-
           --health-cmd pg_isready
@@ -39,14 +39,23 @@ jobs:
       uses: actions/checkout@v2
 
     # Install migrations library
-    - name: install golang-migrate
+    - name: Install golang-migrate
       run: |
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz | tar xvz
-        sudo mv migrate.linux-amd64 /usr/bin/migrate
+        sudo mv migrate /usr/bin/migrate
         which migrate
         
     - name: Run migrations
       run: make migrateup
+
+    - name: Create env file
+      run: |
+        touch app.env
+        echo DB_DRIVER=postgres >> app.env
+        echo DB_SOURCE=postgres://root:secret@localhost:5432/user_service?sslmode=disable >> app.env
+        echo SERVER_ADDRESS=0.0.0.0:8080 >> app.env
+        echo GIN_MODE=debug >> app.env
+        cat app.env
 
     - name: Test
       run: make test

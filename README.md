@@ -37,6 +37,7 @@ VALUES 	('Zidani Most', 45.911460, 14.980200, 'OMV'),
 - [ ] API unit tests
 - [ ] Health checks
 - [x] Docker file
-- [ ] CI/CD github actions
+- [x] CI github actions
+- [ ] CD github actions
 - [ ] Dockerhub
-- [ ] AWS account
+- [ ] Config server

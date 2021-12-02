@@ -52,7 +52,7 @@ jobs:
       run: |
         touch app.env
         echo DB_DRIVER=postgres >> app.env
-        echo DB_SOURCE=postgres://root:secret@localhost:5432/user_service?sslmode=disable >> app.env
+        echo DB_SOURCE=postgres://root:secret@localhost:5432/station_service?sslmode=disable >> app.env
         echo SERVER_ADDRESS=0.0.0.0:8080 >> app.env
         echo GIN_MODE=debug >> app.env
         cat app.env

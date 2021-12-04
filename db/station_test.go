@@ -1,4 +1,4 @@
-package models
+package db
 
 import (
 	"context"
@@ -9,8 +9,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var station = new(Station)
-
 func createRandomStation(t *testing.T) Station {
 	arg := CreateStationParam{
 		Name:      util.RandomString(5),
@@ -19,7 +17,7 @@ func createRandomStation(t *testing.T) Station {
 		Provider:  util.RandomString(5),
 	}
 
-	result, err := station.Create(context.Background(), arg)
+	result, err := testStore.Create(context.Background(), arg)
 
 	// Check if method executed correctly.
 	require.NoError(t, err)
@@ -41,7 +39,7 @@ func TestCreateStation(t *testing.T) {
 
 func TestGetStation(t *testing.T) {
 	station1 := createRandomStation(t)
-	station2, err := station.GetByID(context.Background(), station1.ID)
+	station2, err := testStore.GetByID(context.Background(), station1.ID)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, station2)
@@ -67,7 +65,7 @@ func TestListStations(t *testing.T) {
 	}
 
 	// Retrieve list of stations.
-	stations, err := station.GetAll(context.Background(), arg)
+	stations, err := testStore.GetAll(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, stations)
 
@@ -86,7 +84,7 @@ func TestUpdateStation(t *testing.T) {
 		Provider:  util.RandomString(5),
 	}
 
-	station2, err := station.Update(context.Background(), arg, station1.ID)
+	station2, err := testStore.Update(context.Background(), arg, station1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, station2)
 
@@ -99,10 +97,10 @@ func TestUpdateStation(t *testing.T) {
 
 func TestDeleteStation(t *testing.T) {
 	station1 := createRandomStation(t)
-	err := station.Delete(context.Background(), station1.ID)
+	err := testStore.Delete(context.Background(), station1.ID)
 	require.NoError(t, err)
 
-	station2, err := station.GetByID(context.Background(), station1.ID)
+	station2, err := testStore.GetByID(context.Background(), station1.ID)
 	require.EqualError(t, err, sql.ErrNoRows.Error())
 	require.Empty(t, station2)
 }

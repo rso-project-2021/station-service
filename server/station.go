@@ -1,8 +1,8 @@
-package controllers
+package server
 
 import (
 	"net/http"
-	"station-service/models"
+	"station-service/db"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,9 +32,7 @@ type updateStationRequest struct {
 	Provider  string  `json:"provider" db:"provider"`
 }
 
-var station = new(models.Station)
-
-func (sc StationController) GetByID(ctx *gin.Context) {
+func (server *Server) GetByID(ctx *gin.Context) {
 
 	// Check if request has ID field in URI.
 	var req getStationRequest
@@ -45,7 +43,7 @@ func (sc StationController) GetByID(ctx *gin.Context) {
 	}
 
 	// Execute query.
-	result, err := station.GetByID(ctx, req.ID)
+	result, err := server.store.GetByID(ctx, req.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err})
 		ctx.Abort()
@@ -55,7 +53,7 @@ func (sc StationController) GetByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
-func (sc StationController) GetAll(ctx *gin.Context) {
+func (server *Server) GetAll(ctx *gin.Context) {
 
 	// Check if request has parameters offset and limit for pagination.
 	var req getStationListRequest
@@ -65,13 +63,13 @@ func (sc StationController) GetAll(ctx *gin.Context) {
 		return
 	}
 
-	arg := models.ListStationsParam{
+	arg := db.ListStationsParam{
 		Offset: req.Offset,
 		Limit:  req.Limit,
 	}
 
 	// Execute query.
-	result, err := station.GetAll(ctx, arg)
+	result, err := server.store.GetAll(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err})
 		ctx.Abort()
@@ -81,7 +79,7 @@ func (sc StationController) GetAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
-func (sc StationController) Create(ctx *gin.Context) {
+func (server *Server) Create(ctx *gin.Context) {
 
 	// Check if request has all required fields in json body.
 	var req createStationRequest
@@ -91,7 +89,7 @@ func (sc StationController) Create(ctx *gin.Context) {
 		return
 	}
 
-	arg := models.CreateStationParam{
+	arg := db.CreateStationParam{
 		Name:      req.Name,
 		Latitude:  req.Latitude,
 		Longitude: req.Longitude,
@@ -99,7 +97,7 @@ func (sc StationController) Create(ctx *gin.Context) {
 	}
 
 	// Execute query.
-	result, err := station.Create(ctx, arg)
+	result, err := server.store.Create(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err})
 		ctx.Abort()
@@ -109,7 +107,7 @@ func (sc StationController) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, result)
 }
 
-func (sc StationController) Update(ctx *gin.Context) {
+func (server *Server) Update(ctx *gin.Context) {
 
 	// Check if request has ID field in URI.
 	var reqID getStationRequest
@@ -127,7 +125,7 @@ func (sc StationController) Update(ctx *gin.Context) {
 		return
 	}
 
-	arg := models.UpdateStationParam{
+	arg := db.UpdateStationParam{
 		Name:      req.Name,
 		Latitude:  req.Latitude,
 		Longitude: req.Longitude,
@@ -135,7 +133,7 @@ func (sc StationController) Update(ctx *gin.Context) {
 	}
 
 	// Execute query.
-	result, err := station.Update(ctx, arg, reqID.ID)
+	result, err := server.store.Update(ctx, arg, reqID.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err})
 		ctx.Abort()
@@ -145,7 +143,7 @@ func (sc StationController) Update(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, result)
 }
 
-func (sc StationController) Delete(ctx *gin.Context) {
+func (server *Server) Delete(ctx *gin.Context) {
 
 	// Check if request has ID field in URI.
 	var req getStationRequest
@@ -156,7 +154,7 @@ func (sc StationController) Delete(ctx *gin.Context) {
 	}
 
 	// Execute query.
-	if err := station.Delete(ctx, req.ID); err != nil {
+	if err := server.store.Delete(ctx, req.ID); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err})
 		ctx.Abort()
 		return

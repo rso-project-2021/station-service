@@ -1,8 +1,7 @@
-package models
+package db
 
 import (
 	"context"
-	"station-service/db"
 )
 
 type Station struct {
@@ -32,34 +31,28 @@ type ListStationsParam struct {
 	Limit  int32
 }
 
-func (s Station) GetByID(ctx context.Context, id int64) (station Station, err error) {
-	db := db.GetDB()
-
+func (store *Store) GetByID(ctx context.Context, id int64) (station Station, err error) {
 	const query = `SELECT * FROM "stations" WHERE "station_id" = $1`
-	err = db.GetContext(ctx, &station, query, id)
+	err = store.db.GetContext(ctx, &station, query, id)
 
 	return
 }
 
-func (s Station) GetAll(ctx context.Context, arg ListStationsParam) (stations []Station, err error) {
-	db := db.GetDB()
-
+func (store *Store) GetAll(ctx context.Context, arg ListStationsParam) (stations []Station, err error) {
 	const query = `SELECT * FROM "stations" OFFSET $1 LIMIT $2`
 	stations = []Station{}
-	err = db.SelectContext(ctx, &stations, query, arg.Offset, arg.Limit)
+	err = store.db.SelectContext(ctx, &stations, query, arg.Offset, arg.Limit)
 
 	return
 }
 
-func (s Station) Create(ctx context.Context, arg CreateStationParam) (Station, error) {
-	db := db.GetDB()
-
+func (store *Store) Create(ctx context.Context, arg CreateStationParam) (Station, error) {
 	const query = `
 	INSERT INTO "stations"("name", "lat", "lng", "provider") 
 	VALUES ($1, $2, $3, $4)
 	RETURNING "station_id", "name", "lat", "lng", "provider"
 	`
-	row := db.QueryRowContext(ctx, query, arg.Name, arg.Latitude, arg.Longitude, arg.Provider)
+	row := store.db.QueryRowContext(ctx, query, arg.Name, arg.Latitude, arg.Longitude, arg.Provider)
 
 	var station Station
 
@@ -74,9 +67,7 @@ func (s Station) Create(ctx context.Context, arg CreateStationParam) (Station, e
 	return station, err
 }
 
-func (s Station) Update(ctx context.Context, arg UpdateStationParam, id int64) (Station, error) {
-	db := db.GetDB()
-
+func (store *Store) Update(ctx context.Context, arg UpdateStationParam, id int64) (Station, error) {
 	const query = `
 	UPDATE "stations"
 	SET "name" = $2,
@@ -86,7 +77,7 @@ func (s Station) Update(ctx context.Context, arg UpdateStationParam, id int64) (
 	WHERE "station_id" = $1
 	RETURNING "station_id", "name", "lat", "lng", "provider"
 	`
-	row := db.QueryRowContext(ctx, query, id, arg.Name, arg.Latitude, arg.Longitude, arg.Provider)
+	row := store.db.QueryRowContext(ctx, query, id, arg.Name, arg.Latitude, arg.Longitude, arg.Provider)
 
 	var station Station
 	err := row.Scan(
@@ -100,14 +91,12 @@ func (s Station) Update(ctx context.Context, arg UpdateStationParam, id int64) (
 	return station, err
 }
 
-func (s Station) Delete(ctx context.Context, id int64) error {
-	db := db.GetDB()
-
+func (store *Store) Delete(ctx context.Context, id int64) error {
 	const query = `
 	DELETE FROM stations
 	WHERE "station_id" = $1
 	`
-	_, err := db.ExecContext(ctx, query, id)
+	_, err := store.db.ExecContext(ctx, query, id)
 
 	return err
 }

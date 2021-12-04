@@ -1,23 +1,25 @@
-package models
+package db
 
 import (
 	"log"
 	"os"
 	"station-service/config"
-	"station-service/db"
 	"testing"
 )
+
+var testStore *Store
 
 func TestMain(m *testing.M) {
 
 	// Load configuration settings.
-	config, err := config.LoadConfig("../.")
+	config, err := config.New("../.")
 	if err != nil {
 		log.Fatal("Failed to load config: ", err)
 	}
 
 	// Connect to the database.
-	if err := db.Connect(config.DBDriver, config.DBSource); err != nil {
+	testStore, err = Connect(config.DBDriver, config.DBSource)
+	if err != nil {
 		log.Fatal("Failed to connect to database: ", err)
 	}
 

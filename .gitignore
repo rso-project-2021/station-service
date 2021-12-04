@@ -84,3 +84,5 @@ Temporary Items
 
 # Custom added
 *.env
+workspace.code-workspace
+config.json 

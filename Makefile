@@ -1,5 +1,5 @@
 postgres:
-	docker run --name service_postgres --network estations-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:alpine
+	docker run --name service_postgres -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:alpine
 
 createdb:
 	docker exec -it service_postgres createdb --username=root --owner=root station_service

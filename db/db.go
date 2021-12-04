@@ -7,25 +7,25 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var db *sqlx.DB
+type Store struct {
+	db *sqlx.DB
+}
 
-func Connect(source, driver string) (err error) {
-
+func Connect(source, driver string) (*Store, error) {
 	// Connect to database.
-	db, err = sqlx.Connect(source, driver)
+	db, err := sqlx.Connect(source, driver)
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	// Test database connection.
-	if err = db.Ping(); err != nil {
-		return
+	store := &Store{
+		db: db,
 	}
 
 	log.Println("Connected to database!")
-	return
+	return store, err
 }
 
-func GetDB() *sqlx.DB {
-	return db
+func (store *Store) PingDB() error {
+	return store.db.Ping()
 }

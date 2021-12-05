@@ -11,9 +11,10 @@ type Store struct {
 	db *sqlx.DB
 }
 
-func Connect(source, driver string) (*Store, error) {
+func Connect(driver, source string) (*Store, error) {
+
 	// Connect to database.
-	db, err := sqlx.Connect(source, driver)
+	db, err := sqlx.Connect(driver, source)
 	if err != nil {
 		return nil, err
 	}

@@ -1,4 +1,4 @@
-package server
+package api
 
 import (
 	"net/http"
@@ -19,17 +19,17 @@ type getStationListRequest struct {
 }
 
 type createStationRequest struct {
-	Name      string  `json:"name" db:"name"`
-	Latitude  float32 `json:"lat" db:"lat"`
-	Longitude float32 `json:"lng" db:"lng"`
-	Provider  string  `json:"provider" db:"provider"`
+	Name      string  `json:"name" binding:"required"`
+	Latitude  float32 `json:"lat" binding:"required"`
+	Longitude float32 `json:"lng" binding:"required"`
+	Provider  string  `json:"provider" binding:"required"`
 }
 
 type updateStationRequest struct {
-	Name      string  `json:"name" db:"name"`
-	Latitude  float32 `json:"lat" db:"lat"`
-	Longitude float32 `json:"lng" db:"lng"`
-	Provider  string  `json:"provider" db:"provider"`
+	Name      string  `json:"name" binding:"required"`
+	Latitude  float32 `json:"lat" binding:"required"`
+	Longitude float32 `json:"lng" binding:"required"`
+	Provider  string  `json:"provider" binding:"required"`
 }
 
 func (server *Server) GetByID(ctx *gin.Context) {

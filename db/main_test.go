@@ -12,7 +12,7 @@ var testStore *Store
 func TestMain(m *testing.M) {
 
 	// Load configuration settings.
-	config, err := config.New("../.")
+	config, err := config.New("./..")
 	if err != nil {
 		log.Fatal("Failed to load config: ", err)
 	}

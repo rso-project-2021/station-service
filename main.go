@@ -2,9 +2,9 @@ package main
 
 import (
 	"log"
+	"station-service/api"
 	"station-service/config"
 	"station-service/db"
-	"station-service/server"
 )
 
 func main() {
@@ -22,7 +22,7 @@ func main() {
 	}
 
 	// Create a server and setup routes.
-	server, err := server.NewServer(config, store)
+	server, err := api.NewServer(config, store)
 	if err != nil {
 		log.Fatal("Failed to create a server: ", err)
 	}

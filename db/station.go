@@ -31,6 +31,13 @@ type ListStationsParam struct {
 	Limit  int32
 }
 
+type OriginLocationParam struct {
+	Lat    float32
+	Lng    float32
+	Offset int32
+	Limit  int32
+}
+
 func (store *Store) GetByID(ctx context.Context, id int64) (station Station, err error) {
 	const query = `SELECT * FROM "stations" WHERE "station_id" = $1`
 	err = store.db.GetContext(ctx, &station, query, id)
@@ -99,4 +106,28 @@ func (store *Store) Delete(ctx context.Context, id int64) error {
 	_, err := store.db.ExecContext(ctx, query, id)
 
 	return err
+}
+
+func (store *Store) GetAllByDistance(ctx context.Context, arg OriginLocationParam) (stations []Station, err error) {
+	const query = `
+	SELECT
+	    "station_id",
+	    "name",
+	    "lat",
+	    "lng",
+	    "provider"
+	FROM (
+	        SELECT *, SQRT(POW(69.1 *($1 :: float - s.lat :: float), 2) + POW(
+	            	69.1 *(s.lng :: float - $2 :: float) * COS($1 :: float / 57.3),2)
+	            ) as "distance"
+	        FROM "stations" as s
+	        ORDER BY "distance" 
+	        OFFSET $3
+	        LIMIT $4
+	) as "near_by_stations"
+	`
+	stations = []Station{}
+	err = store.db.SelectContext(ctx, &stations, query, arg.Lat, arg.Lng, arg.Offset, arg.Limit)
+
+	return
 }

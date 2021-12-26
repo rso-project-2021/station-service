@@ -4,12 +4,11 @@
 Microservice used for working with filling stations data.
 
 ## Environment file
-In root of your local repository add `app.env` file.
 In root of your local repository add `config.json` file.
 ```
 {
     "db_driver" : "postgres",
-    "db_source": "postgres://root:secret@localhost:5432/station_service?sslmode=disable",
+    "db_source": "postgres://root:secret@localhost:5432/electric_station?sslmode=disable",
     "server_address": "0.0.0.0:8080",
     "gin_mode": "debug"
 }
@@ -30,21 +29,6 @@ Populate database with some stations. You can run this query in [TablePlus](http
 ```sql
 INSERT INTO stations("name", "lat", "lng", "provider")
 VALUES 	('Zidani Most', 45.911460, 14.980200, 'OMV'),
-	('Vrhnika', 45.966530, 14.298550, 'Petrol');
+	('Vrhnika', 45.966530, 14.298550, 'Petrol'),
+    ('Ljubljanski grad', 46.0451374, 14.4917561, 'Petrol');
 ```
-
-## Things to implement
-- [x] CRUD operations
-- [x] Database migrations
-- [x] CRUD unit tests
-- [x] Makefile
-- [x] Health checks
-- [x] Docker file
-- [x] CI github actions
-- [x] Dockerhub
-- [x] AWS account
-- [x] Kubernetes cluster in AWS
-- [x] Metrics ([Prometheus in Go](https://prometheus.io/docs/guides/go-application/))
-- [x] CD github actions
-- [ ] Config server (dynamic configuration)
-- [ ] API unit tests

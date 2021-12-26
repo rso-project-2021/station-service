@@ -29,6 +29,7 @@ func NewServer(config config.Config, store *db.Store) (*Server, error) {
 	{
 		v1.GET("/stations/:id", server.GetByID)
 		v1.GET("/stations", server.GetAll)
+		v1.POST("/graphql", server.GetWithQuery)
 		v1.POST("/stations", server.Create)
 		v1.PUT("/stations/:id", server.Update)
 		v1.DELETE("/stations/:id", server.Delete)

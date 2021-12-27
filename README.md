@@ -29,8 +29,8 @@ Populate database with some stations. You can run this query in [TablePlus](http
 ```sql
 INSERT INTO stations("name", "lat", "lng", "provider")
 VALUES 	('Zidani Most', 45.911460, 14.980200, 'OMV'),
-	('Vrhnika', 45.966530, 14.298550, 'Petrol'),
-    ('Ljubljanski grad', 46.0451374, 14.4917561, 'Petrol'),
-    ('Logatec', 45.918809, 14.2161334, 'OMV'),
-    ('Zdravstveni dom Vič', 46.0463459, 14.4818508, 'OMV');
+	    ('Vrhnika', 45.966530, 14.298550, 'Petrol'),
+        ('Ljubljanski grad', 46.0451374, 14.4917561, 'Petrol'),
+        ('Logatec', 45.918809, 14.2161334, 'OMV'),
+        ('Zdravstveni dom Vič', 46.0463459, 14.4818508, 'OMV');
 ```
